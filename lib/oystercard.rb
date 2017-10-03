@@ -4,7 +4,7 @@ class Oystercard
   MAXIMUM_LIMIT = 90
   def initialize
     @balance = 0
-    @in_journey = nil
+    @in_journey = false
   end
 
   def top_up(amount)
