@@ -13,10 +13,6 @@ describe Oystercard do
     expect { subject.top_up(1) }.to \
       raise_error(RuntimeError, "Maximum balance = #{maximum_balance}")
   end
-  it 'deducts money from the oystercard' do
-    subject.top_up(50)
-    expect { subject.deduct(1) }.to change { subject.balance }.from(50).to(49)
-  end
   it 'expects the oystercard to respond to :touch_in' do
     expect(subject).to respond_to(:touch_in)
   end
@@ -25,13 +21,18 @@ describe Oystercard do
     expect(subject.in_journey).to eq true
   end
   it 'expects in_journey == false once touch_out is used' do
+    subject.top_up(10)
     subject.touch_in
     subject.touch_out
     expect(subject.in_journey).to eq false
   end
 
-  it 'stops you using your card if balance is too low' do 
-    expect { subject.deduct 1 }.to raise_error 'Not enough balance'
+  it 'stops you using your card if balance is too low' do
+    expect { subject.touch_out }.to raise_error 'Not enough balance'
   end
 
+  it 'deducts MINIMUM_FARE when touch_out is used' do
+    subject.top_up(10)
+    expect { subject.touch_out }.to change { subject.balance }.by(-1)
+  end
 end
