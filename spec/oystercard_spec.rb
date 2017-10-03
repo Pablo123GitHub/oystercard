@@ -61,18 +61,19 @@ describe Oystercard do
     expect { subject.touch_out seven_sisters }.to change { subject.history.length }.by(1)
   end
 
+context 'touching in and out through one journey'
+let(:card) { Oystercard.new }
+  before(:each) do
+    card.top_up(10)
+    card.touch_in liverpool_street
+    card.touch_out seven_sisters
+ end
   it 'saves the correct entry station in journey history' do
-    subject.top_up(10)
-    subject.touch_in liverpool_street
-    subject.touch_out seven_sisters
-    expect(subject.history[0][:entry_station]).to eq liverpool_street
+    expect(card.history[0][:entry_station]).to eq liverpool_street
   end
 
   it 'saves the correct exit_station in journey history' do
-    subject.top_up(10)
-    subject.touch_in liverpool_street
-    subject.touch_out seven_sisters
-    expect(subject.history[0][:exit_station]).to eq seven_sisters
+    expect(card.history[0][:exit_station]).to eq seven_sisters
   end
 
 end
