@@ -17,8 +17,13 @@ describe Oystercard do
       raise_error(RuntimeError, "Maximum balance = #{maximum_balance}")
   end
   describe '#deduct'
-  it 'deducts money from the oystercard' do
+    it 'deducts money from the oystercard' do
     subject.top_up(50)
     expect { subject.deduct(1) }.to change { subject.balance }.from(50).to(49)
   end
+  describe '#touch_in' do
+    it 'expects the oystercard to respond to :touch_in' do
+      expect(subject).to respond_to(:touch_in)
+  end
+end
 end
