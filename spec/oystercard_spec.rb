@@ -43,4 +43,11 @@ describe Oystercard do
     expect(subject.entry_station).to eq liverpool_street
   end
 
+  it 'set entry_station to nil upon touch_out' do
+    subject.top_up(10)
+    subject.touch_in liverpool_street
+    subject.touch_out
+    expect(subject.entry_station).to be_nil
+  end
+
 end
