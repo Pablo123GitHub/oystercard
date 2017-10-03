@@ -2,6 +2,7 @@ require 'oystercard'
 
 describe Oystercard do
   let(:liverpool_street) { double(:station, :name => "Liverpool Street") }
+  let(:seven_sisters) { double(:station, :name => "Seven Sisters") }
   it "creates a new Oystercard object with a 'balance' instance variable = 0" do
     expect(subject.balance).to eq 0
   end
@@ -24,17 +25,17 @@ describe Oystercard do
   it 'expects in_journey == false once touch_out is used' do
     subject.top_up(10)
     subject.touch_in liverpool_street
-    subject.touch_out
+    subject.touch_out seven_sisters
     expect(subject.in_journey).to eq false
   end
 
   it 'stops you using your card if balance is too low' do
-    expect { subject.touch_out }.to raise_error 'Not enough balance'
+    expect { subject.touch_out liverpool_street }.to raise_error 'Not enough balance'
   end
 
   it 'deducts MINIMUM_FARE when touch_out is used' do
     subject.top_up(10)
-    expect { subject.touch_out }.to change { subject.balance }.by(-1)
+    expect { subject.touch_out liverpool_street }.to change { subject.balance }.by(-1)
   end
 
   it 'is possible to touch_in at a specific station' do
@@ -46,8 +47,32 @@ describe Oystercard do
   it 'set entry_station to nil upon touch_out' do
     subject.top_up(10)
     subject.touch_in liverpool_street
-    subject.touch_out
+    subject.touch_out seven_sisters
     expect(subject.entry_station).to be_nil
+  end
+
+  it 'has a history variable that defaults to an empty array' do
+    expect(subject.history).to match_array []
+  end
+
+  it 'has a history of one journey after touching in and out' do
+    subject.top_up 10
+    subject.touch_in liverpool_street
+    expect { subject.touch_out seven_sisters }.to change { subject.history.length }.by(1)
+  end
+
+  it 'saves the correct entry station in journey history' do
+    subject.top_up(10)
+    subject.touch_in liverpool_street
+    subject.touch_out seven_sisters
+    expect(subject.history[0][:entry_station]).to eq liverpool_street
+  end
+
+  it 'saves the correct exit_station in journey history' do
+    subject.top_up(10)
+    subject.touch_in liverpool_street
+    subject.touch_out seven_sisters
+    expect(subject.history[0][:exit_station]).to eq seven_sisters
   end
 
 end
