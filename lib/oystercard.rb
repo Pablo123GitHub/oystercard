@@ -1,6 +1,6 @@
 # :nodoc:
 class Oystercard
-  attr_reader :balance, :in_journey
+  attr_reader :balance, :in_journey, :entry_station
   MAXIMUM_LIMIT = 90
   MINIMUM_FARE = 1
   def initialize
@@ -14,8 +14,9 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in
+  def touch_in station
     @in_journey = true
+    @entry_station = station
   end
 
   def touch_out

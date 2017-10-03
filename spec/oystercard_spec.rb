@@ -1,6 +1,7 @@
 require 'oystercard'
 
 describe Oystercard do
+  let(:liverpool_street) { double(:station, :name => "Liverpool Street") }
   it "creates a new Oystercard object with a 'balance' instance variable = 0" do
     expect(subject.balance).to eq 0
   end
@@ -17,12 +18,12 @@ describe Oystercard do
     expect(subject).to respond_to(:touch_in)
   end
   it 'expects in_journey == true once touch_in is used' do
-    subject.touch_in
+    subject.touch_in liverpool_street
     expect(subject.in_journey).to eq true
   end
   it 'expects in_journey == false once touch_out is used' do
     subject.top_up(10)
-    subject.touch_in
+    subject.touch_in liverpool_street
     subject.touch_out
     expect(subject.in_journey).to eq false
   end
@@ -35,4 +36,11 @@ describe Oystercard do
     subject.top_up(10)
     expect { subject.touch_out }.to change { subject.balance }.by(-1)
   end
+
+  it 'is possible to touch_in at a specific station' do
+    subject.top_up 10
+    subject.touch_in liverpool_street
+    expect(subject.entry_station).to eq liverpool_street
+  end
+
 end
