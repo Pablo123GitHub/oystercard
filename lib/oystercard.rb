@@ -14,14 +14,14 @@ class Oystercard
     @balance += amount
   end
 
-  def touch_in station
+  def touch_in(station)
     @entry_station = station
     @in_journey = true
   end
 
-  def touch_out station
+  def touch_out(station)
     deduct(MINIMUM_FARE)
-    @history <<  { :entry_station => @entry_station, :exit_station => station }
+    @history << { entry_station: @entry_station, exit_station: station }
     @entry_station = nil
     @in_journey = false
   end

@@ -1,8 +1,8 @@
 require 'oystercard'
 
 describe Oystercard do
-  let(:liverpool_street) { double(:station, :name => "Liverpool Street") }
-  let(:seven_sisters) { double(:station, :name => "Seven Sisters") }
+  let(:liverpool_street) { double(name: 'Liverpool Street') }
+  let(:seven_sisters) { double(name: 'Seven Sisters') }
   it "creates a new Oystercard object with a 'balance' instance variable = 0" do
     expect(subject.balance).to eq 0
   end
@@ -30,12 +30,14 @@ describe Oystercard do
   end
 
   it 'stops you using your card if balance is too low' do
-    expect { subject.touch_out liverpool_street }.to raise_error 'Not enough balance'
+    expect { subject.touch_out liverpool_street }.to raise_error \
+    'Not enough balance'
   end
 
   it 'deducts MINIMUM_FARE when touch_out is used' do
     subject.top_up(10)
-    expect { subject.touch_out liverpool_street }.to change { subject.balance }.by(-1)
+    expect { subject.touch_out liverpool_street }.to change \
+    { subject.balance }.by(-1)
   end
 
   it 'is possible to touch_in at a specific station' do
@@ -58,16 +60,17 @@ describe Oystercard do
   it 'has a history of one journey after touching in and out' do
     subject.top_up 10
     subject.touch_in liverpool_street
-    expect { subject.touch_out seven_sisters }.to change { subject.history.length }.by(1)
+    expect { subject.touch_out seven_sisters }.to change \
+    { subject.history.length }.by(1)
   end
 
 context 'touching in and out through one journey'
 let(:card) { Oystercard.new }
   before(:each) do
-    card.top_up(10)
-    card.touch_in liverpool_street
-    card.touch_out seven_sisters
- end
+   card.top_up(10)
+   card.touch_in liverpool_street
+   card.touch_out seven_sisters
+  end
   it 'saves the correct entry station in journey history' do
     expect(card.history[0][:entry_station]).to eq liverpool_street
   end
@@ -75,5 +78,4 @@ let(:card) { Oystercard.new }
   it 'saves the correct exit_station in journey history' do
     expect(card.history[0][:exit_station]).to eq seven_sisters
   end
-
 end
